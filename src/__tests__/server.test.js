@@ -40,3 +40,65 @@ describe("GET /cards", () => {
       });
   });
 });
+
+describe("GET /cards/:cardId", () => {
+  test("returns a single card identified by its id", () => {
+    return request(app)
+      .get("/cards/card003")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          title: "card 3 title",
+          imageUrl: "/front-cover-landscape.jpg",
+          card_id: "card003",
+          base_price: 200,
+          availableSizes: [
+            {
+              id: "md",
+              title: "Medium",
+            },
+            {
+              id: "lg",
+              title: "Large",
+            },
+          ],
+          pages: [
+            {
+              title: "Front Cover",
+              templateId: "template006",
+            },
+            {
+              title: "Inside Top",
+              templateId: "template007",
+            },
+            {
+              title: "Inside Bottom",
+              templateId: "template007",
+            },
+            {
+              title: "Back Cover",
+              templateId: "template008",
+            },
+          ],
+        });
+      });
+  });
+  test("requests for non-valid card IDs are rejected (404)", () => {
+    return request(app)
+      .get("/cards/card101")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.message).toBe("card101 is not a valid card ID.");
+      });
+  });
+  test("invalid input requests are rejected (400)", () => {
+    return request(app)
+      .get("/cards/cardnumber101")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe(
+          "Card ID format not valid. Correct format example: card123."
+        );
+      });
+  });
+});

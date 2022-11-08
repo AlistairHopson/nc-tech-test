@@ -1,4 +1,4 @@
-const { selectCards } = require("./model");
+const { selectCards, selectSingleCard } = require("./model");
 
 const getCards = (req, res, next) => {
   selectCards()
@@ -6,4 +6,11 @@ const getCards = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { getCards };
+const getSingleCard = (req, res, next) => {
+  const { cardId } = req.params;
+  selectSingleCard(cardId)
+    .then((body) => res.status(200).send(body))
+    .catch(next);
+};
+
+module.exports = { getCards, getSingleCard };
